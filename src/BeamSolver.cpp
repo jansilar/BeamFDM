@@ -16,10 +16,8 @@ void BeamSolver::solve() {
     // D4(y) = (y[i-2] - 4y[i-1] + 6y[i] - 4y[i+1] + y[i+2]) / h^4
     // pro i = 2..N-3 (vnitřní uzly)
     // BC: y(0)=0, y'(0)=0, y''(L)=0, y'''(L)=0 (clamped-free beam)
-    // využijeme metodu Gaussovy eliminace pro pásovou matici
-    // (zde malý N → klasická implementace OK)
-
     // systém: A*y = f
+
     using namespace Eigen;
     MatrixXd A = MatrixXd::Zero(N, N);
     VectorXd f = VectorXd::Zero(N);
@@ -41,22 +39,22 @@ void BeamSolver::solve() {
     // y(0)=0
     A(0,0) = 1.0; f(0) = 0.0;
     // y'(0)=0 → (-3y0 + 4y1 - y2) / (2h) = 0
-    A(1,0) = -3.0/(2*h);
-    A(1,1) =  4.0/(2*h);
-    A(1,2) = -1.0/(2*h);
+    A(1,0) = -3.0;
+    A(1,1) =  4.0;
+    A(1,2) = -1.0;
     f(1) = 0.0;
 
     // y''(L)=0 → (yN-3 - 2yN-2 + yN-1)/h^2 = 0
-    A(N-2,N-3) =  1.0/(h*h);
-    A(N-2,N-2) = -2.0/(h*h);
-    A(N-2,N-1) =  1.0/(h*h);
+    A(N-2,N-3) =  1.0;
+    A(N-2,N-2) = -2.0;
+    A(N-2,N-1) =  1.0;
     f(N-2) = 0.0;
 
     // y'''(L)=0 → (-yN-4 + 4yN-3 -5yN-2 + 2yN-1)/h^3 = 0
-    A(N-1,N-4) = -1.0/(h*h*h);
-    A(N-1,N-3) =  4.0/(h*h*h);
-    A(N-1,N-2) = -5.0/(h*h*h);
-    A(N-1,N-1) =  2.0/(h*h*h);
+    A(N-1,N-4) = -1.0;
+    A(N-1,N-3) =  4.0;
+    A(N-1,N-2) = -5.0;
+    A(N-1,N-1) =  2.0;
     f(N-1) = 0.0;
 
     // ---- Vyřeš lineární systém ----

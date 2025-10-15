@@ -4,6 +4,7 @@
 #include <algorithm> 
 
 int main() {
+    int N = 500;          // počet uzlů
     // Parametry nosníku
     double L = 2.0;           // délka [m]
     double E = 1.0e10;        // Young [Pa]
@@ -11,7 +12,7 @@ int main() {
     double I = M_PI * std::pow(d, 4) / 64.0; // moment setrvačnosti [m^4]
     double q = 300.0;         // zatížení [N/m]
 
-    BeamSolver solver(30, L, E, I, q);
+    BeamSolver solver(N, L, E, I, q);
     solver.solve();
 
     const auto& y = solver.getY();
@@ -22,7 +23,7 @@ int main() {
         std::cout << std::fixed << std::setprecision(3)
                   << x[i] << "\t" << y[i]*1000 << "\n";
     }
-
+    std::cout << "\nN = " << N << "\n";
     double yAnal = solver.analyticMaxDeflection();
     std::cout << "\nAnalytic max deflection = " << yAnal*1000 << " mm\n";
     std::cout << "Numerical max deflection = " << (*std::max_element(y.begin(), y.end()))*1000 << " mm\n";

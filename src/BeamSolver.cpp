@@ -20,8 +20,8 @@ void BeamSolver::solve() {
 
     // systém: A*y = f
     std::vector<std::vector<double>> A(N, std::vector<double>(N, 0.0));
-    std::vector<double> f(N, 0); // uniform q
-
+    std::vector<double> f(N, 0);
+    
     // vnitřní uzly (4. derivace centrálně)
     for (int i = 2; i < N - 2; ++i) {
         A[i][i - 2] =  1.0;

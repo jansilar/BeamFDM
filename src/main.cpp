@@ -23,7 +23,7 @@ int main() {
     double ksi = 0.05;        // poměr krytického tlumení (2%)
     double c = ksi*(2*omega1*rho*A);        // tlumení
     double dx = L / (N - 1);          // krok sítě [m]
-    double dt = 0.01*std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
+    double dt = 0.1*std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
 
     BeamSolver solver(N, L, E, I, q, rho, A, c);
     const auto& x = solver.getX();
@@ -35,12 +35,18 @@ int main() {
     //static:
     //solver.solveStatic();
     //dynamic:
-    double simTime = 1; // celkový čas simulace [s]
+    double finalTime = 0.1; // celkový čas simulace [s]
     double t = 0;
-    while (t < simTime){
-        solver.stepDynamic(dt, 1);
-        t += dt;
+    double outputStep = 0.001; // výstupní krok [s]
+    int nInternalSteps = static_cast<int>(outputStep / dt);
+    while (t < finalTime){
+        solver.stepDynamic(dt, nInternalSteps);
+        t += dt*nInternalSteps;
         std::cout << "t = " << t << " s, yLast = " << y[N-1]*1000 << " mm\n";
+        // std::cout << "t = " << t << " s, ";
+        // for (int i = 0; i < N; i++){
+        //     std::cout << "y[" << i << "] = " << y[i]*1000 << ", ";      
+        // }
         
     }
     // End profiling

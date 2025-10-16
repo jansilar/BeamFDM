@@ -75,7 +75,7 @@ void BeamSolver::stepDynamic(double dt, int steps) {
     for (int step = 0; step < steps; ++step) {
         // Vnitřní uzly
         for (int i = 2; i < N - 2; ++i) {
-            double D4y = (y[i-2] - 4*y[i-1] + 6*y[i] - 4*y[i+1] + y[i+2]) / std::pow(dx,4);
+            double D4y = (y[i-2] - 4*y[i-1] + 6*y[i] - 4*y[i+1] + y[i+2]);
             double f = q; // externí síla
             yNew[i] = (f + M*(2*y[i] - yPrev[i]) + D*yPrev[i] - K*D4y) / (M + D);
         }

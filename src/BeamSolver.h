@@ -8,7 +8,7 @@ public:
     BeamSolver(int N, double L, double E, double I, double q);
 
     // provede výpočet průhybu
-    void solve();
+    void solveStatic();
 
     // vrátí výsledky
     const std::vector<double>& getY() const { return y; }

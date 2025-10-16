@@ -8,7 +8,7 @@
 #include <chrono>
 
 int main() {
-    int N = 1000;          // počet uzlů
+    int N = 200;          // počet uzlů
     std::string fileName = "beam_results.csv";
     // Parametry nosníku
     double L = 2.0;           // délka [m]
@@ -21,7 +21,7 @@ int main() {
     // Start profiling
     auto start = std::chrono::high_resolution_clock::now();
     // Run solver
-    solver.solve();
+    solver.solveStatic();
     // End profiling
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;

@@ -11,9 +11,9 @@ BeamSolver::BeamSolver(int N_, double L_, double E_, double I_, double q_)
         x[i] = i * h;
 }
 
-void BeamSolver::solve() {
-    // pětidiagonální systém: EI * D4(y) = q
-    // D4(y) = (y[i-2] - 4y[i-1] + 6y[i] - 4y[i+1] + y[i+2]) / h^4
+void BeamSolver::solveStatic() {
+    // Bernoulli-Navier eq: EI * D4(y) = q
+    // pětidiagonální systém: D4(y) = (y[i-2] - 4y[i-1] + 6y[i] - 4y[i+1] + y[i+2]) / h^4
     // pro i = 2..N-3 (vnitřní uzly)
     // BC: y(0)=0, y'(0)=0, y''(L)=0, y'''(L)=0 (clamped-free beam)
     // systém: A*y = f

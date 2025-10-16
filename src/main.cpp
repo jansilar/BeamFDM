@@ -8,7 +8,7 @@
 #include <chrono>
 
 int main() {
-    int N = 200;          // počet uzlů
+    int N = 100;          // počet uzlů
     std::string fileName = "beam_results.csv";
     // Parametry nosníku
     double L = 2.0;           // délka [m]
@@ -16,8 +16,16 @@ int main() {
     double d = 0.10;          // průměr [m]
     double I = M_PI * std::pow(d, 4) / 64.0; // moment setrvačnosti [m^4]
     double q = 300.0;         // zatížení [N/m]
+    // Parametry pro dynamiku
+    double rho = 700.0;      // hustota [kg/m^3]
+    double A = M_PI * std::pow(d, 2) / 4.0; // průřezová plocha [m^2]
+    double omega1 = std::pow(1.875,2) * std::sqrt(E*I/(rho*A*std::pow(L,4))); // 1. vlastní frekvence vetknutého nosníku
+    double ksi = 0.05;        // poměr krytického tlumení (2%)
+    double c = ksi*(2*omega1*rho*A);        // tlumení
+    double dx = L / (N - 1);          // krok sítě [m]
+    double dt = std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
 
-    BeamSolver solver(N, L, E, I, q);
+    BeamSolver solver(N, L, E, I, q, rho, A, c);
     // Start profiling
     auto start = std::chrono::high_resolution_clock::now();
     // Run solver

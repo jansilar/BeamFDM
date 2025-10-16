@@ -8,9 +8,9 @@
 #include <chrono>
 
 int main() {
-    int N = 100;          // počet uzlů
+    int N = 10;          // počet uzlů
     std::string fileName = "beam_results.csv";
-    // Parametry nosníku
+    // Parametry prutu
     double L = 2.0;           // délka [m]
     double E = 1.0e10;        // Young [Pa]
     double d = 0.10;          // průměr [m]
@@ -23,20 +23,29 @@ int main() {
     double ksi = 0.05;        // poměr krytického tlumení (2%)
     double c = ksi*(2*omega1*rho*A);        // tlumení
     double dx = L / (N - 1);          // krok sítě [m]
-    double dt = std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
+    double dt = 0.01*std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
 
     BeamSolver solver(N, L, E, I, q, rho, A, c);
+    const auto& x = solver.getX();
+    const auto& y = solver.getY();
+
     // Start profiling
     auto start = std::chrono::high_resolution_clock::now();
     // Run solver
-    solver.solveStatic();
+    //static:
+    //solver.solveStatic();
+    //dynamic:
+    double simTime = 1; // celkový čas simulace [s]
+    double t = 0;
+    while (t < simTime){
+        solver.stepDynamic(dt, 1);
+        t += dt;
+        std::cout << "t = " << t << " s, yLast = " << y[N-1]*1000 << " mm\n";
+        
+    }
     // End profiling
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
-
-
-    const auto& y = solver.getY();
-    const auto& x = solver.getX();
 
     std::cout << "x [m]\t y [mm]\n";
     for (size_t i = 0; i < y.size(); ++i) {

@@ -89,8 +89,8 @@ void BeamSolver::stepDynamic(double dt, int steps) {
         // yN-2 = 2yN-3 - yN-4
         // dosadit zpět: yN-1 = 2(2yN-3 - yN-4) - yN-3 = 3yN-3 - 2yN-4
         // tedy:
-        yNew[N-2] = 2*y[N-3] - y[N-4];
-        yNew[N-1] = 3*y[N-3] - 2*y[N-4];
+        yNew[N-2] = 2*yNew[N-3] - yNew[N-4];
+        yNew[N-1] = 3*yNew[N-3] - 2*yNew[N-4];
 
         // Posun v čase
         yPrev = y;

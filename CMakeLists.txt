@@ -9,6 +9,7 @@ find_package(Eigen3 REQUIRED)
 add_executable(BeamFDM
     src/main.cpp
     src/BeamSolver.cpp
+    src/DataWriter.cpp
 )
 
 target_include_directories(BeamFDM PRIVATE ${EIGEN3_INCLUDE_DIR})

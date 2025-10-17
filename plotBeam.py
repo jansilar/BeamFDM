@@ -5,7 +5,7 @@ import os
 
 print("Adresář je : " + os.getcwd())
 
-df = pd.read_csv("./build/beam_results.csv")
+df = pd.read_csv("./build/beam_static_results.csv")
 
 xmax = np.max(np.abs(df["y[m]"]))
 

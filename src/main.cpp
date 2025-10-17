@@ -12,7 +12,8 @@
 int main() {
 
     int N = 10;          // počet uzlů
-    std::string fileName = "beam_results.csv";
+    std::string fileNameStatic = "beam_static_results.csv";
+    std::string fileNameDynamic = "beam_dynamic_results.csv";
     // Parametry prutu
     double L = 2.0;           // délka [m]
     double E = 1.0e10;        // Young [Pa]
@@ -29,40 +30,16 @@ int main() {
     double dt = 0.1*std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
 
     BeamSolver solver(N, L, E, I, rho, A, c);
-    DataWriter dataWriter("beam_dynamic_results.csv");
-
     const auto& x = solver.getX();
     const auto& y = solver.getY();
-    dataWriter.writeHeader(x);
 
     // Start profiling
     auto start = std::chrono::high_resolution_clock::now();
-    // Run solver
-    //static:
-    //solver.solveStatic();
-    //dynamic:
-    double finalTime = 1; // celkový čas simulace [s]
-    double t = 0;
-    double outputStep = 0.001; // výstupní krok [s]
-    int nInternalSteps = static_cast<int>(outputStep / dt);
-    double qPulse = 0;
-    while (t < finalTime){
-        qPulse = (t < 0.03) ? q : 0;  // puls větru
-      
-        solver.stepDynamic(qPulse, dt, nInternalSteps);
-        t += dt*nInternalSteps;
-        std::cout << "t = " << t << " s, yLast = " << y[N-1]*1000 << " mm\n";
-        dataWriter.writeStep(t, y);
-        // std::cout << "t = " << t << " s, ";
-        // for (int i = 0; i < N; i++){
-        //     std::cout << "y[" << i << "] = " << y[i]*1000 << ", ";      
-        // }
-        
-    }
-    // End profiling
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed = end - start;
 
+    //===================
+    //static calculation:
+    //===================
+    solver.solveStatic(q);
     std::cout << "x [m]\t y [mm]\n";
     for (size_t i = 0; i < y.size(); ++i) {
         std::cout << std::fixed << std::setprecision(3)
@@ -74,14 +51,45 @@ int main() {
     std::cout << "Numerical max deflection = " << (*std::max_element(y.begin(), y.end()))*1000 << " mm\n";
 
     // Výstup do CSV
-    std::ofstream outFile(fileName);
+    std::ofstream outFile(fileNameStatic);
     outFile << "x[m],y[m]\n";
     for (size_t i = 0; i < y.size(); ++i) {
         outFile << std::fixed << std::setprecision(6)
                 << x[i] << "," << y[i] << "\n";
     }
     outFile.close();
-    std::cout << "\nResults written to " << std::filesystem::current_path() << "/" << fileName << " \n";
+    std::cout << "\nResults written to " << std::filesystem::current_path() << "/" << fileNameStatic << " \n";
+
+
+    //===================
+    //dynamic simulation:
+    //===================
+    DataWriter dataWriter(fileNameDynamic);
+    dataWriter.writeHeader(x);
+    double finalTime = 1; // celkový čas simulace [s]
+    double t = 0;
+    solver.resetState();
+    dataWriter.writeStep(t, y);
+    double outputStep = 0.001; // výstupní krok [s]
+    int nInternalSteps = static_cast<int>(outputStep / dt);
+    double qPulse = 0;
+    while (t < finalTime){
+        qPulse = (t < 0.03) ? q : 0;  // puls větru
+      
+        solver.stepDynamic(qPulse, dt, nInternalSteps);
+        t += dt*nInternalSteps;
+        //std::cout << "t = " << t << " s, yLast = " << y[N-1]*1000 << " mm\n";
+        dataWriter.writeStep(t, y);
+        // std::cout << "t = " << t << " s, ";
+        // for (int i = 0; i < N; i++){
+        //     std::cout << "y[" << i << "] = " << y[i]*1000 << ", ";      
+        // }
+        
+    }
+    // End profiling
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+
     
     std::cout << "Simulation time: " << elapsed.count() << " s\n";
 

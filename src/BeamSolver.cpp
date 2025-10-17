@@ -102,6 +102,15 @@ void BeamSolver::stepDynamic(double q, double dt, int steps) {
     }
 }
 
+void BeamSolver::resetState() {
+    for (int i = 0; i < N; ++i) {
+        y[i] = 0.0;
+        yPrev[i] = 0.0;
+        yNew[i] = 0.0;
+    }
+}   
+
+
 double BeamSolver::analyticMaxDeflection(double q) const {
     // analytické maximum pro konzolu s uniform q: y_max = qL^4 / (8EI)
     return q * std::pow(L, 4) / (8.0 * E * I);

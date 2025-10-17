@@ -10,6 +10,8 @@ public:
     // provede výpočet průhybu
     void solveStatic(double q);
     void stepDynamic(double q, double dt, int steps);
+    // resetuje stav pro dynamiku
+    void resetState();
 
     // vrátí výsledky
     const std::vector<double>& getY() const { return y; }

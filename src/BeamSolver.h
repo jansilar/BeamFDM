@@ -5,25 +5,24 @@
 
 class BeamSolver {
 public:
-    BeamSolver(int N, double L, double E, double I, double q, double rho, double A, double c);
+    BeamSolver(int N, double L, double E, double I, double rho, double A, double c);
 
     // provede výpočet průhybu
-    void solveStatic();
-    void stepDynamic(double dt, int steps);
+    void solveStatic(double q);
+    void stepDynamic(double q, double dt, int steps);
 
     // vrátí výsledky
     const std::vector<double>& getY() const { return y; }
     const std::vector<double>& getX() const { return x; }
 
     // analytické srovnání pro konzolu
-    double analyticMaxDeflection() const;
+    double analyticMaxDeflection(double q) const;
 
 private:
     int N;              // počet uzlů
     double L;           // délka nosníku [m]
     double E;           // Youngův modul [Pa]
     double I;           // moment setrvačnosti [m^4]
-    double q;           // rozložené zatížení [N/m]
     double dx;           // krok sítě [m]
     double rho;         // hustota materiálu [kg/m^3] - pro dynamiku
     double A;           // průřezová plocha [m^2] - pro dynamiku

@@ -28,7 +28,7 @@ int main() {
     double dx = L / (N - 1);          // krok sítě [m]
     double dt = 0.1*std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
 
-    BeamSolver solver(N, L, E, I, q, rho, A, c);
+    BeamSolver solver(N, L, E, I, rho, A, c);
     DataWriter dataWriter("beam_dynamic_results.csv");
 
     const auto& x = solver.getX();
@@ -41,12 +41,15 @@ int main() {
     //static:
     //solver.solveStatic();
     //dynamic:
-    double finalTime = 0.1; // celkový čas simulace [s]
+    double finalTime = 1; // celkový čas simulace [s]
     double t = 0;
     double outputStep = 0.001; // výstupní krok [s]
     int nInternalSteps = static_cast<int>(outputStep / dt);
+    double qPulse = 0;
     while (t < finalTime){
-        solver.stepDynamic(dt, nInternalSteps);
+        qPulse = (t < 0.03) ? q : 0;  // puls větru
+      
+        solver.stepDynamic(qPulse, dt, nInternalSteps);
         t += dt*nInternalSteps;
         std::cout << "t = " << t << " s, yLast = " << y[N-1]*1000 << " mm\n";
         dataWriter.writeStep(t, y);
@@ -66,7 +69,7 @@ int main() {
                   << x[i] << "\t" << y[i]*1000 << "\n";
     }
     std::cout << "\nN = " << N << "\n";
-    double yAnal = solver.analyticMaxDeflection();
+    double yAnal = solver.analyticMaxDeflection(q);
     std::cout << "\nAnalytic max deflection = " << yAnal*1000 << " mm\n";
     std::cout << "Numerical max deflection = " << (*std::max_element(y.begin(), y.end()))*1000 << " mm\n";
 

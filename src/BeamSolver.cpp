@@ -1,8 +1,8 @@
 #include "BeamSolver.h"
 #include <Eigen/Dense>
 
-BeamSolver::BeamSolver(int N_, double L_, double E_, double I_, double q_, double rho_, double A_, double c_)
-    : N(N_), L(L_), E(E_), I(I_), q(q_), rho(rho_), A(A_), c(c_)
+BeamSolver::BeamSolver(int N_, double L_, double E_, double I_, double rho_, double A_, double c_)
+    : N(N_), L(L_), E(E_), I(I_), rho(rho_), A(A_), c(c_)
 {
     dx = L / (N - 1);
     x.resize(N);
@@ -13,7 +13,8 @@ BeamSolver::BeamSolver(int N_, double L_, double E_, double I_, double q_, doubl
         x[i] = i * dx;
 }
 
-void BeamSolver::solveStatic() {
+void BeamSolver::solveStatic(double q) {
+    // q .. rozložené zatížení [N/m]
     // Bernoulli-Navier eq: EI * D4(y) = q
     // pětidiagonální systém: D4(y) = (y[i-2] - 4y[i-1] + 6y[i] - 4y[i+1] + y[i+2]) / h^4
     // pro i = 2..N-3 (vnitřní uzly)
@@ -66,7 +67,10 @@ void BeamSolver::solveStatic() {
         y[i] = y_vec(i);
 }
 
-void BeamSolver::stepDynamic(double dt, int steps) {
+void BeamSolver::stepDynamic(double q, double dt, int steps) {
+    //q .. rozložené zatížení [N/m]
+    //dt .. časový krok [s]
+    //steps .. počet časových kroků
     double M = rho*A/(dt*dt);       // hmotnostní člen
     double D = c/(2*dt);            // tlumící člen
     double K = E*I/std::pow(dx,4);  // tuhostní člen
@@ -98,7 +102,7 @@ void BeamSolver::stepDynamic(double dt, int steps) {
     }
 }
 
-double BeamSolver::analyticMaxDeflection() const {
+double BeamSolver::analyticMaxDeflection(double q) const {
     // analytické maximum pro konzolu s uniform q: y_max = qL^4 / (8EI)
     return q * std::pow(L, 4) / (8.0 * E * I);
 }

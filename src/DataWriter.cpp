@@ -1,4 +1,5 @@
 #include "DataWriter.h"
+#include <stdexcept>
 
 DataWriter::DataWriter(const std::string& filename) {
     outFile.open(filename);

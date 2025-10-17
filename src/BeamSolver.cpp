@@ -1,9 +1,12 @@
 #include "BeamSolver.h"
 #include <Eigen/Dense>
+#include <algorithm>
 
 BeamSolver::BeamSolver(int N_, double L_, double E_, double I_, double rho_, double A_, double c_)
     : N(N_), L(L_), E(E_), I(I_), rho(rho_), A(A_), c(c_)
 {
+    if (N < 5)
+        throw std::invalid_argument("N must be at least 5 for the beam static solver.");
     dx = L / (N - 1);
     x.resize(N);
     y.resize(N, 0.0);
@@ -97,8 +100,8 @@ void BeamSolver::stepDynamic(double q, double dt, int steps) {
         yNew[N-1] = 3*yNew[N-3] - 2*yNew[N-4];
 
         // Posun v čase
-        yPrev = y;
-        y = yNew;
+        std::swap(yPrev,y);
+        std::swap(y, yNew);
     }
 }
 

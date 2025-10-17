@@ -27,8 +27,10 @@ int main() {
     double ksi = 0.05;        // poměr krytického tlumení (2%)
     double c = ksi*(2*omega1*rho*A);        // tlumení
     double dx = L / (N - 1);          // krok sítě [m]
-    double dt = 0.1*std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
-
+    double dt = 0.1 * std::pow(dx,2) / 2 * std::sqrt(rho*A/(E*I));        // časový krok [s] (podmínka stability)
+    if (!(dt > 0.0)) {
+        throw std::runtime_error("Computed dt is not positive.");
+    }
     BeamSolver solver(N, L, E, I, rho, A, c);
     const auto& x = solver.getX();
     const auto& y = solver.getY();

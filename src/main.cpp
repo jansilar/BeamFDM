@@ -6,8 +6,11 @@
 #include <string>
 #include <filesystem>
 #include <chrono>
+#include "DataWriter.h"
+
 
 int main() {
+
     int N = 10;          // počet uzlů
     std::string fileName = "beam_results.csv";
     // Parametry prutu
@@ -26,8 +29,11 @@ int main() {
     double dt = 0.1*std::pow(dx,2)/2*std::sqrt(rho*A/(E*I));        // časový krok [s]
 
     BeamSolver solver(N, L, E, I, q, rho, A, c);
+    DataWriter dataWriter("beam_dynamic_results.csv");
+
     const auto& x = solver.getX();
     const auto& y = solver.getY();
+    dataWriter.writeHeader(x);
 
     // Start profiling
     auto start = std::chrono::high_resolution_clock::now();
@@ -43,6 +49,7 @@ int main() {
         solver.stepDynamic(dt, nInternalSteps);
         t += dt*nInternalSteps;
         std::cout << "t = " << t << " s, yLast = " << y[N-1]*1000 << " mm\n";
+        dataWriter.writeStep(t, y);
         // std::cout << "t = " << t << " s, ";
         // for (int i = 0; i < N; i++){
         //     std::cout << "y[" << i << "] = " << y[i]*1000 << ", ";      

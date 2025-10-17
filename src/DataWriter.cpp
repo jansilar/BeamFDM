@@ -5,7 +5,6 @@ DataWriter::DataWriter(const std::string& filename) {
     if (!outFile.is_open()) {
         throw std::runtime_error("Failed to open output file: " + filename);
     }
-
 }
 
 DataWriter::~DataWriter() {

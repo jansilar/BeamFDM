@@ -15,7 +15,7 @@ DataWriter::~DataWriter() {
 }
 
 void DataWriter::writeHeader(const std::vector<double>& x) {
-    outFile << "Time[s], ";
+    outFile << "Time[s], q[N/m], ";
     for (size_t i = 0; i < x.size(); ++i) {
         outFile << "x="<<x[i];
         if (i < x.size() - 1)
@@ -24,8 +24,8 @@ void DataWriter::writeHeader(const std::vector<double>& x) {
     outFile << "\n";
 }
 
-void DataWriter::writeStep(double t, const std::vector<double>& y) {
-    outFile << t << ", ";
+void DataWriter::writeStep(double t, double q, const std::vector<double>& y) {
+    outFile << t << ", " << q << ", ";
     for (size_t i = 0; i < y.size(); ++i) {
         outFile << y[i];
         if (i < y.size() - 1)

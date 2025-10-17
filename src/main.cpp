@@ -75,7 +75,7 @@ int main() {
     double finalTime = 1; // celkový čas simulace [s]
     double t = 0;
     solver.resetState();
-    dataWriter.writeStep(t, y);
+    dataWriter.writeStep(t, q, y);
     double outputStep = 0.001; // výstupní krok [s]
     int nInternalSteps = static_cast<int>(outputStep / dt);
     double qPulse = 0;
@@ -83,7 +83,7 @@ int main() {
         qPulse = (t < 0.03) ? q : 0;  // puls větru
         solver.stepDynamic(qPulse, dt, nInternalSteps);
         t += dt*nInternalSteps;
-        dataWriter.writeStep(t, y);
+        dataWriter.writeStep(t, qPulse, y);
     }
     std::cout << "Dynamic results written to " << std::filesystem::current_path() << "/" << fileNameDynamic << " \n";  
     std::cout << "======= Dynamic simulation finished. =======\n";

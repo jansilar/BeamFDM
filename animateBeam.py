@@ -9,10 +9,13 @@ df = pd.read_csv("./build/beam_dynamic_results.csv")
 # první sloupec = čas
 time_values = df.iloc[:, 0].values
 # zbytek sloupců = y(x)
-x_labels = df.columns[1:]
+# druhý sloupec = q (externí síla)
+q_values = df.iloc[:, 1].values
+# od třetího sloupce dál = y(x) pro různé x
+x_labels = df.columns[2:]
 
 x = np.array([float(lbl.split('=')[1]) for lbl in x_labels])
-Y = df.iloc[:, 1:].values  # shape: (Nt, Nx)
+Y = df.iloc[:, 2:].values  # shape: (Nt, Nx)
 
 # příprava grafu
 plt.ion()  # interaktivní mód
@@ -27,7 +30,7 @@ ax.set_ylim(x.min(), x.max())
 # smyčka přes časové kroky
 for n, t in enumerate(time_values):
     line.set_xdata(Y[n, :])
-    ax.set_title(f"t = {t:.4f} s")
-    plt.pause(0.02)  # pauza ~20 ms
+    ax.set_title(f"t = {t:.4f} s, q = {q_values[n]:.2f} N/m")
+    plt.pause(0.04)  # pauza ~20 ms
 plt.ioff()
 plt.show()

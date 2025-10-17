@@ -39,6 +39,7 @@ int main() {
     //===================
     //static calculation:
     //===================
+    std::cout << "======= Running static (steady-state) simulation... =======\n";
     solver.solveStatic(q);
     std::cout << "x [m]\t y [mm]\n";
     for (size_t i = 0; i < y.size(); ++i) {
@@ -58,12 +59,15 @@ int main() {
                 << x[i] << "," << y[i] << "\n";
     }
     outFile.close();
-    std::cout << "\nResults written to " << std::filesystem::current_path() << "/" << fileNameStatic << " \n";
+    std::string s = std::filesystem::current_path().string();
+    std::cout << "\nStatic results written to " << std::filesystem::current_path().string() << "/" << fileNameStatic << " \n";
+    std::cout << "======= Static simulation finished. =======\n\n\n";
 
 
     //===================
     //dynamic simulation:
     //===================
+    std::cout << "======= Running dynamic simulation... =======\n";
     DataWriter dataWriter(fileNameDynamic);
     dataWriter.writeHeader(x);
     double finalTime = 1; // celkový čas simulace [s]
@@ -75,23 +79,15 @@ int main() {
     double qPulse = 0;
     while (t < finalTime){
         qPulse = (t < 0.03) ? q : 0;  // puls větru
-      
         solver.stepDynamic(qPulse, dt, nInternalSteps);
         t += dt*nInternalSteps;
-        //std::cout << "t = " << t << " s, yLast = " << y[N-1]*1000 << " mm\n";
         dataWriter.writeStep(t, y);
-        // std::cout << "t = " << t << " s, ";
-        // for (int i = 0; i < N; i++){
-        //     std::cout << "y[" << i << "] = " << y[i]*1000 << ", ";      
-        // }
-        
     }
+    std::cout << "Dynamic results written to " << std::filesystem::current_path() << "/" << fileNameDynamic << " \n";  
+    std::cout << "======= Dynamic simulation finished. =======\n";
     // End profiling
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed = end - start;
-
-    
-    std::cout << "Simulation time: " << elapsed.count() << " s\n";
-
+    std::cout << "Simulation took: " << elapsed.count() << " s\n";
     
 }

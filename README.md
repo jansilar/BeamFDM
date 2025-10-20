@@ -1,4 +1,4 @@
-A finite-difference simulator for a single 1D beam subject to external loading (e.g., wind force).  
+A simulator for a single 1D beam subject to external loading (e.g., wind force) using finite-difference.  
 The program computes the deflection of a beam either in steady-state (static) or time-dependent (dynamic) form.  
 It produces CSV outputs in `build/` (`beam_static_results.csv`, `beam_dynamic_results.csv`) and includes Python scripts for plotting and animation.
 
@@ -22,11 +22,10 @@ where:
 | $q(x)$ | external distributed load per unit length (N/m) |
 
 The equation is discretized using the **finite-difference method (FDM)**, leading to a **linear system of equations** with a **penta-diagonal coefficient matrix**.  
-This represents the spatial coupling introduced by the fourth-order derivative.
 
 ---
 
-### Dynamic case — damped Euler–Bernoulli beam equation
+### Dynamic case — Euler–Bernoulli beam equation including damping and inertia
 
 The time-dependent simulation solves the **dynamic form** of the Euler–Bernoulli beam equation, extended with **inertia** and **damping** terms:
 
@@ -42,7 +41,7 @@ where the new terms represent:
 | $c \frac{\partial y}{\partial t}$ | damping (energy dissipation) |
 
 The equation is solved using an **explicit finite-difference time integration scheme (leap-frog method)**.  
-Due to the explicit nature of the method, the **time step** must satisfy an approximate **stability condition**:
+Due to the explicit method, the **time step** must satisfy an approximate **stability condition**:
 
 $$\Delta t \sim (\Delta x)^2$$
 

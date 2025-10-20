@@ -1,4 +1,4 @@
-A finite-difference simulator for a 1D beam subject to external loading (e.g., wind force).  
+A finite-difference simulator for a single 1D beam subject to external loading (e.g., wind force).  
 The program computes the deflection of a beam either in steady-state (static) or time-dependent (dynamic) form.  
 It produces CSV outputs in `build/` (`beam_static_results.csv`, `beam_dynamic_results.csv`) and includes Python scripts for plotting and animation.
 
@@ -10,18 +10,16 @@ It produces CSV outputs in `build/` (`beam_static_results.csv`, `beam_dynamic_re
 
 The steady-state calculation solves the **Euler–Bernoulli beam equation** in its static form:
 
-\[
-E I \frac{d^4 y}{d x^4} = q(x)
-\]
+$$E I \frac{d^4 y}{d x^4} = q(x)$$
 
 where:
 
 | Symbol | Meaning |
 |:--------|:---------|
-| \(y(x)\) | deflection of the beam (m) |
-| \(E\) | Young’s modulus (Pa) |
-| \(I\) | second moment of area (m⁴) |
-| \(q(x)\) | external distributed load per unit length (N/m) |
+| $y(x)$ | deflection of the beam (m) |
+| $E$ | Young’s modulus (Pa) |
+| $I$ | second moment of area (m⁴) |
+| $q(x)$ | external distributed load per unit length (N/m) |
 
 The equation is discretized using the **finite-difference method (FDM)**, leading to a **linear system of equations** with a **penta-diagonal coefficient matrix**.  
 This represents the spatial coupling introduced by the fourth-order derivative.
@@ -32,25 +30,25 @@ This represents the spatial coupling introduced by the fourth-order derivative.
 
 The time-dependent simulation solves the **dynamic form** of the Euler–Bernoulli beam equation, extended with **inertia** and **damping** terms:
 
-\[
+$$
 \rho A \frac{\partial^2 y}{\partial t^2} + c \frac{\partial y}{\partial t} + E I \frac{\partial^4 y}{\partial x^4} = q(x,t)
-\]
+$$
 
 where the new terms represent:
 
 | Term | Meaning |
 |:------|:----------|
-| \(\rho A \frac{\partial^2 y}{\partial t^2}\) | inertial force per unit length (mass × acceleration) |
-| \(c \frac{\partial y}{\partial t}\) | damping (energy dissipation) |
+| $\rho A \frac{\partial^2 y}{\partial t^2}$ | inertial force per unit length (mass × acceleration) |
+| $c \frac{\partial y}{\partial t}$ | damping (energy dissipation) |
 
 The equation is solved using an **explicit finite-difference time integration scheme (leap-frog method)**.  
 Due to the explicit nature of the method, the **time step** must satisfy an approximate **stability condition**:
 
-\[
-\Delta t \propto (\Delta x)^2
-\]
+$$\Delta t \sim (\Delta x)^2$$
 
 to ensure stable simulation of the beam’s oscillations.
+
+The gravitational force is neglected in both cases.
 
 ---
 
@@ -58,18 +56,12 @@ to ensure stable simulation of the beam’s oscillations.
 
 The beam is modeled as **clamped at x = 0** and **free at x = L**, leading to the following boundary conditions:
 
-\[
-y(0) = 0, \quad \frac{dy}{dx}(0) = 0, \quad \frac{d^2y}{dx^2}(L) = 0, \quad \frac{d^3y}{dx^3}(L) = 0
-\]
-
-Their physical meaning:
-
 | Condition | Physical meaning |
 |:-----------|:----------------|
-| \(y(0) = 0\) | zero deflection at the clamped end |
-| \(\frac{dy}{dx}(0) = 0\) | zero slope (no rotation) at the clamped end |
-| \(\frac{d^2y}{dx^2}(L) = 0\) | zero bending moment at the free end |
-| \(\frac{d^3y}{dx^3}(L) = 0\) | zero shear force at the free end |
+| $y(0) = 0$ | zero position at the clamped end |
+| $\frac{dy}{dx}(0) = 0$ | zero slope at the clamped end |
+| $\frac{d^2y}{dx^2}(L) = 0$ | zero bending moment at the free end |
+| $\frac{d^3y}{dx^3}(L) = 0$ | zero shear force at the free end |
 
 These conditions ensure that the beam is rigidly attached at the base and free to move at its tip — typical for cantilever configurations.
 

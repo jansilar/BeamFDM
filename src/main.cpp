@@ -80,7 +80,7 @@ int main() {
     int nInternalSteps = static_cast<int>(outputStep / dt);
     double qPulse = 0;
     while (t < finalTime){
-        qPulse = (t < 0.03) ? q : 0;  // puls větru
+        qPulse = (0.03 < t && t < 0.06) ? q : 0;  // puls větru
         solver.stepDynamic(qPulse, dt, nInternalSteps);
         t += dt*nInternalSteps;
         dataWriter.writeStep(t, qPulse, y);

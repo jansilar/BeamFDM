@@ -58,8 +58,8 @@ for n, t in enumerate(time_values):
     marker.set_data([time_values[n]], [q_values[n]])
 
     # update titles
-    ax1.set_title(f"Beam deflection — t = {t:.4f} s")
-    ax2.set_title(f"Applied load — t = {t:.4f} s, q = {q_values[n]:.2f} N/m")
+    ax1.set_title(f"Beam deflection, t = {t:.4f} s")
+    ax2.set_title(f"Applied load, q = {q_values[n]:.2f} N/m")
 
     # draw
     fig.canvas.draw_idle()

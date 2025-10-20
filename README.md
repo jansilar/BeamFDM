@@ -67,8 +67,6 @@ These conditions ensure that the beam is rigidly attached at the base and free t
 
 ---
 
-
-
 ## Requirements
 - Linux
 - CMake >= 3.10
@@ -119,21 +117,13 @@ python3 animateBeam.py
 
 Make sure the CSV files are present in `build/`.
 
-## Notes & Recommendations
-- Minimum nodes: `N >= 5` (required by 4th-order finite-difference stencil).
-- BeamSolver:
-  - Use integer stencil for 4th derivative and scale by `E*I / h^4` once (avoid double-scaling).
-  - Prefer swapping buffers (std::swap) instead of copying vectors for performance.
-- DataWriter:
-  - Constructor throws on file open failure; wrap creation in `try/catch` if you need graceful error handling.
-- For larger problems consider banded/sparse solvers instead of dense LU for better performance and stability.
-- Check time-step stability for explicit schemes; adjust `dt` and damping `c` accordingly.
-
-## Troubleshooting
-- "File not found" for CSV: check working directory and that the program wrote files to `build/`.
-- Animation issues: verify CSV header format (`Time, q, x=...`) and that number of columns matches expectations.
-- Very small dynamic amplitudes: check D4 stencil / dx^4 scaling and `dt` computation.
+## Next steps
+- Check and handle all possible input errors.
+- Use a band solver (LAPACK `dgbsv`) for the linear system in the static simulation for better performance (≈ O(N), not O(N²)).
+- Use an implicit method for the dynamic simulation to allow a larger time step ($\Delta t \sim \Delta x$ not $(\Delta x)^2$.
+- Calculate other physical quantities such as velocity, acceleration, bending moment and shear force.
+- Include gravitational force.
+- Allow modeling a tree built from multiple branching beams.
 
 ## Contact
-Local project path: `/home/janek/Projekty/BeamFDM`  
-Open an issue or attach files/snippets if you want targeted fixes.
+jansilar@post.cz

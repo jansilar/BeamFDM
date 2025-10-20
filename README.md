@@ -63,7 +63,7 @@ The beam is modeled as **clamped at x = 0** and **free at x = L**, leading to th
 | $\frac{d^2y}{dx^2}(L) = 0$ | zero bending moment at the free end |
 | $\frac{d^3y}{dx^3}(L) = 0$ | zero shear force at the free end |
 
-These conditions ensure that the beam is rigidly attached at the base and free to move at its tip — typical for cantilever configurations.
+These conditions ensure that the beam is rigidly attached at the base and free to move at its tip.
 
 ---
 
@@ -109,10 +109,14 @@ cmake --build build
 ```bash
 python3 plotBeam.py
 ```
+![Static solution](static_solution.png)
+
 - Dynamic animation:
 ```bash
 python3 animateBeam.py
 ```
+![Dynamic solution](dynamic_solution.png)
+
 Make sure the CSV files are present in `build/`.
 
 ## Notes & Recommendations
